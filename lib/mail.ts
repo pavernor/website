@@ -44,7 +44,19 @@ export type MailResult = {
 /** Kirim satu email. Melempar error kalau SMTP belum dikonfigurasi. */
 export async function sendMail(input: MailInput): Promise<MailResult> {
   const { from } = getSmtpConfig();
-  const info = await getTransport().sendMail({ from, ...input });
+
+  // Reply-To default dari env, supaya balasan tidak hilang ke domain yang
+  // belum punya MX. Bisa ditimpa per-pesan lewat input.replyTo.
+  const replyTo = input.replyTo ?? process.env.SMTP_REPLY_TO ?? undefined;
+
+  const info = await getTransport().sendMail({
+    from,
+    to: input.to,
+    subject: input.subject,
+    text: input.text,
+    html: input.html,
+    replyTo,
+  });
 
   return {
     messageId: info.messageId,
