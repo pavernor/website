@@ -15,8 +15,8 @@
 # without rebuilding.
 set -euo pipefail
 
-HOST="${HOST:-vps-alvn}"
-DIR="Project/pavernor-src"
+HOST="${HOST:?set HOST to your ssh alias, e.g. HOST=prod}"
+DIR="${DIR:-Project/pavernor-src}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 cd "$(dirname "$0")/.."
 
