@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.gitignore
+.design
+.env*
+AGENTS.md
+README.md
+Dockerfile
+.dockerignore
+docker-compose.yml
+next-env.d.ts
