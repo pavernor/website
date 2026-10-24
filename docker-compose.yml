@@ -1,0 +1,29 @@
+services:
+  web:
+    build: .
+    image: pavernor-web:latest
+    container_name: pavernor-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NODE_ENV=production
+    # `required: false` supaya `docker compose up` tetap jalan kalau .env
+    # belum ada di VPS (deploy.sh memang mengecualikan `.env*`).
+    env_file:
+      - path: .env
+        required: false
+    networks:
+      - traefik
+    labels:
+      # Traefik (container `traefik`, network `traefik`) yang memilah Host.
+      # Tunnel cloudflared hanya mengarah ke 127.0.0.1:80.
+      - traefik.enable=true
+      - traefik.http.routers.pavernor.rule=Host(`pavernor.tech`) || Host(`www.pavernor.tech`)
+      - traefik.http.routers.pavernor.entrypoints=web
+      - traefik.http.services.pavernor.loadbalancer.server.port=3000
+
+networks:
+  traefik:
+    external: true
+    name: traefik
