@@ -2,11 +2,27 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPosts, formatDate } from "@/lib/blog";
 import NoteCover from "@/components/NoteCover";
+import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/seo";
+
+const DESCRIPTION =
+  "Notes, news & ideas from Pavernor — announcements, field notes, and explorations in agentic AI.";
 
 export const metadata: Metadata = {
   title: "Notes",
-  description:
-    "Notes, news & ideas from Pavernor — announcements, field notes, and explorations in agentic AI.",
+  description: DESCRIPTION,
+  // Wajib di-set: tanpa ini canonical diwarisi dari layout ("/") sehingga
+  // Google menganggap /blog duplikat homepage dan tidak mengindeksnya.
+  alternates: { canonical: "/blog" },
+  // openGraph di halaman anak menggantikan milik layout seluruhnya, jadi
+  // semua field (termasuk url) harus ditulis ulang di sini.
+  openGraph: {
+    title: "Notes — Pavernor",
+    description: DESCRIPTION,
+    url: "/blog",
+    siteName: SITE_NAME,
+    type: "website",
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 export default function BlogIndex() {

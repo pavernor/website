@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostBySlug, formatDate } from "@/lib/blog";
+import JsonLd from "@/components/JsonLd";
+import { blogPostingJsonLd, DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/seo";
 
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
@@ -17,12 +19,17 @@ export async function generateMetadata(
     title: post.title,
     description: post.excerpt,
     alternates: { canonical: `/blog/${slug}` },
+    // openGraph menggantikan milik layout seluruhnya — url/siteName/images
+    // harus ditulis lagi supaya og:url tidak menunjuk ke homepage.
     openGraph: {
       title: post.title,
       description: post.excerpt,
+      url: `/blog/${slug}`,
+      siteName: SITE_NAME,
       type: "article",
       publishedTime: post.date,
-      ...(post.cover ? { images: [{ url: post.cover }] } : {}),
+      authors: [post.author],
+      images: [post.cover ? { url: post.cover } : DEFAULT_OG_IMAGE],
     },
   };
 }
@@ -34,6 +41,7 @@ export default async function PostPage(props: PageProps<"/blog/[slug]">) {
 
   return (
     <main className="flex-1">
+      <JsonLd data={blogPostingJsonLd(post)} />
       <article className="px-5 pb-28 pt-32 sm:px-7 lg:pt-40">
         <div className="mx-auto max-w-[720px]">
           <Link href="/blog" className="link-u label text-muted transition-colors hover:text-fg">

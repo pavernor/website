@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { siteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 const geist = Geist({
@@ -50,6 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-bg font-sans text-fg">
+        <JsonLd data={siteJsonLd()} />
         <Nav />
         {children}
         <Footer />
